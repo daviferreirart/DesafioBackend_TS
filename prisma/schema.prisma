@@ -1,0 +1,32 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model EventHistory {
+  id Int @id @default(autoincrement())
+  type String
+  subscription_id Subscription @relation(fields: [idSubs], references: [id])
+  idSubs String  
+  }
+
+model Subscription {
+  id       String  @id @default(uuid())
+  status    Status @relation(fields: status_id, references: id)
+  status_id Int
+  eventHistory EventHistory[]
+
+}
+
+model Status {
+  id           Int            @id @default(autoincrement())
+  name         String
+  subscription Subscription[]
+}
