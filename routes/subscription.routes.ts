@@ -13,12 +13,12 @@ app.post('/subscription',async(req,res)=>{
             status_id:status_id
         }
     })
-    res.status(201).json(subs)
+    return res.status(201).json(subs)
 })
 
 app.get('/subscription',async (req, res) =>{
     const subs = await prisma.subscription.findMany()
-    res.status(200).json(subs)
+   return res.status(200).json(subs)
 })
 
 export default app

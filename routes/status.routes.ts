@@ -17,7 +17,7 @@ app.post('/status',async (req,res)=>{
 
 app.get('/status',async (req,res)=>{
     const status = await prisma.status.findMany()
-    res.status(200).json(status)
+    return res.status(200).json(status)
 })
 
 export default app
