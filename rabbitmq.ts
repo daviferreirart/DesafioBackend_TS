@@ -1,7 +1,7 @@
 import amqp from 'amqplib/callback_api'
 
 export default class Rabbit {
-    Receiver(host: string): any {
+    Receiver(host: string, queueName:string): any {
         amqp.connect(host, (connErr, connection) => {
             if (connErr) {
                 throw connErr
@@ -10,11 +10,9 @@ export default class Rabbit {
                 if (channelErr) {
                     throw channelErr
                 }
-                const queue = 'kiko'
-                const payload = "SUBSCRIBED"
-                channel.assertQueue(queue)
-                channel.consume(queue, (msg) => {
-                    console.log(`Message received :${msg?.content.toString()}`)
+                channel.assertQueue(queueName)
+                channel.consume(queueName, (msg) => {
+                    console.log(`Message received:${msg?.content.toString()}`)
                 }, { noAck: true }
                 )
             })
@@ -22,7 +20,7 @@ export default class Rabbit {
 
     }
 
-    Sender(host: string): any {
+    Sender(host: string, queue:string): any {
         amqp.connect(host, (connErr, connection) => {
             if (connErr) {
                 throw connErr
@@ -31,11 +29,9 @@ export default class Rabbit {
                 if (channelError) {
                     throw channelError
                 }
-                const QUEUE = 'codingtest'
-                channel.assertQueue(QUEUE);
-                // Step 4: Send message to queue
-                channel.sendToQueue(QUEUE, Buffer.from('hello from its coding time'));
-                console.log(`Message send ${QUEUE}`);
+                channel.assertQueue(queue);
+                channel.sendToQueue(queue, Buffer.from(queue));
+                console.log(`Message send: ${queue}`);
             })
         })
     }
