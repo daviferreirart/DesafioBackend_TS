@@ -13,8 +13,8 @@ datasource db {
 model EventHistory {
   id              Int          @id @default(autoincrement())
   type            String
-  subscription_id Subscription @relation(fields: [idSubs], references: [id])
-  idSubs          String
+  idSubs Subscription @relation(fields: [subscription_id], references: [id])
+  subscription_id          String
 }
 
 model Subscription {
@@ -23,6 +23,7 @@ model Subscription {
   status_id    Int
   eventHistory EventHistory[]
   created_at   DateTime       @default(now())
+  updated_at   DateTime       @default(now())
 }
 
 model Status {

@@ -5,12 +5,12 @@ const app = express()
 const prisma = new PrismaClient()
 
 app.post('/events', async (req, res) => {
-    const {type,idSubs } = req.body
+    const {type,subscription_id } = req.body
 
     const evento = await prisma.eventHistory.create({
         data:{
             type:type,
-            idSubs:idSubs
+            subscription_id:subscription_id
         }
     })
     return res.status(201).json(evento)
