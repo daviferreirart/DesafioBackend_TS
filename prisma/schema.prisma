@@ -13,12 +13,12 @@ datasource db {
 model EventHistory {
   id              Int          @id @default(autoincrement())
   type            String
-  idSubs Subscription @relation(fields: [subscription_id], references: [id])
-  subscription_id          String
+  idSubs          Subscription @relation(fields: [subscription_id], references: [id])
+  subscription_id Int
 }
 
 model Subscription {
-  id           String         @id @default(uuid())
+  id           Int            @id @default(autoincrement())
   status       Status         @relation(fields: [status_id], references: [id])
   status_id    Int
   eventHistory EventHistory[]
@@ -30,4 +30,10 @@ model Status {
   id           Int            @id @default(autoincrement())
   name         String
   subscription Subscription[]
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  full_name  String
+  created_at DateTime @default(now())
 }
