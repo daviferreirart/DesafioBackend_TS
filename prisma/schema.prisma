@@ -10,6 +10,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id           Int            @id @default(autoincrement())
+  full_name    String
+  subscription Subscription[]
+  created_at   DateTime       @default(now())
+
+}
+
 model EventHistory {
   id              Int          @id @default(autoincrement())
   type            String
@@ -17,23 +25,19 @@ model EventHistory {
   subscription_id Int
 }
 
+model Status {
+  id           Int            @id @default(autoincrement())
+  status_name  String
+  subscription Subscription[]
+}
+
 model Subscription {
   id           Int            @id @default(autoincrement())
   status       Status         @relation(fields: [status_id], references: [id])
   status_id    Int
+  user_id      Int
+  id_user      User           @relation(fields: [user_id], references: [id])
   eventHistory EventHistory[]
   created_at   DateTime       @default(now())
   updated_at   DateTime       @default(now())
-}
-
-model Status {
-  id           Int            @id @default(autoincrement())
-  name         String
-  subscription Subscription[]
-}
-
-model User {
-  id         Int      @id @default(autoincrement())
-  full_name  String
-  created_at DateTime @default(now())
 }

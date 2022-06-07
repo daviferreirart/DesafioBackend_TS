@@ -8,11 +8,12 @@ const prisma = new PrismaClient()
 const rabbit = new Rabbit()
 
 app.post('/subscription', async (req, res) => {
-    const { status_id } = req.body
+    const { status_id, user_id } = req.body
 
     const subs = await prisma.subscription.create({
         data: {
-            status_id: status_id
+            status_id,
+            user_id
         }
     })
     rabbit.Receiver(rabbitmqHost,"SUBSCRIPTION_PURCHASED")

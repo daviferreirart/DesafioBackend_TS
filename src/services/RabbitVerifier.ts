@@ -13,7 +13,7 @@ export default class Verifier {
             rabbit.Sender(rabbitmqHost, message_status)
             const status = await prisma.status.create({
                 data: {
-                    name: name
+                    status_name: name
                 }
             })
 
@@ -29,7 +29,7 @@ export default class Verifier {
                 where: {
                     id: id
                 }, data: {
-                    name: name
+                    status_name: name
                 }
             })
             rabbit.Sender(rabbitmqHost, message_status)
@@ -41,7 +41,7 @@ export default class Verifier {
                 where: {
                     id: id
                 }, data: {
-                    name: name
+                    status_name: name
                 }
             })
             rabbit.Sender(rabbitmqHost, message_status)
