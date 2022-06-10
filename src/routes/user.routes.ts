@@ -20,4 +20,12 @@ app.get("/user", async (req, res) => {
   return res.status(200).json(users);
 });
 
+app.put('/user/',async(req,res)=>{
+  const {id,status} = req.body
+
+  const updatedUserStatus = UserServices.UpdateSubscription(id,status)
+  
+  return res.status(200).json(updatedUserStatus)
+})
+
 export default app
