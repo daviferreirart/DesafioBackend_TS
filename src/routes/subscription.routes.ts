@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import express from 'express'
-import Rabbit from '../services/Rabbitmq'
-import { rabbitmqHost } from '../services/RabbitVerifier'
+import Rabbit from '../services/rabbitServices/Rabbitmq'
+import { rabbitmqHost } from '../services/rabbitServices/RabbitVerifier'
 
 const app = express()
 const prisma = new PrismaClient()

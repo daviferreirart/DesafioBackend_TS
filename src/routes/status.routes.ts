@@ -1,8 +1,8 @@
 import { PrismaClient } from '@prisma/client'
 import express from 'express'
 import AppError from '../error/AppError'
-import Rabbit from '../services/Rabbitmq'
-import Verifier from '../services/RabbitVerifier'
+import Rabbit from '../services//rabbitServices/Rabbitmq'
+import Verifier from '../services/rabbitServices/RabbitVerifier'
 
 const app = express()
 const prisma = new PrismaClient()

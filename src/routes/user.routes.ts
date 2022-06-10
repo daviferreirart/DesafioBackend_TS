@@ -1,19 +1,16 @@
 import { PrismaClient } from "@prisma/client";
 import express from "express";
+import UserServices from "../services/userServices/userService";
 
 const app = express();
 
 app.post("/user", async (req, res) => {
-  const prisma = new PrismaClient();
 
   const { full_name } = req.body;
 
-  const username = await prisma.user.create({
-    data: {
-      full_name
-    },
-  });
-  return res.status(201).json(username);
+  const user = UserServices.CreateNewUser(full_name)
+
+  return res.status(201).json(user);
 });
 
 app.get("/user", async (req, res) => {
