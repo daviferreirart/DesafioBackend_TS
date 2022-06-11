@@ -5,13 +5,12 @@ import events from "./routes/eventHistory.routes";
 import user from "./routes/user.routes";
 import errorHandler from "./error/handler";
 
-const app = express();
-const err = errorHandler;
-app.use(express.json());
+export const application = async () => {
+  const app = express();
+  const err = errorHandler;
+  app.use(express.json());
 
-app.listen(3333, () => {
-  console.log("Server UP");
-});
-
-app.use(status, subscription, events, user);
-app.use(errorHandler);
+  app.use(status, subscription, events, user);
+  app.use(errorHandler);
+  return app;
+};
