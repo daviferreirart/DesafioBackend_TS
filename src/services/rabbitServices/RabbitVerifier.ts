@@ -1,7 +1,7 @@
 import { PrismaClient, Status } from '@prisma/client'
 import AppError from '../../error/AppError'
 import Rabbit from './Rabbitmq'
-export const rabbitmqHost = "amqp://localhost:5672"
+export const rabbitmqHost = "amqp://192.168.106.128:5672"
 
 const prisma = new PrismaClient()
 const rabbit = new Rabbit()
