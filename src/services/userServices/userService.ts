@@ -1,5 +1,6 @@
 import { PrismaClient, Status, User } from "@prisma/client";
 import AppError from "../../error/AppError";
+import { query } from "../../helper/query";
 import { subscribed, restarted, canceled } from "../../helper/statusMessages";
 import Rabbit from "../rabbitServices/Rabbitmq";
 import { rabbitmqHost } from "../rabbitServices/RabbitVerifier";
@@ -35,6 +36,7 @@ export default class UserServices {
           user_id: user.id,
         },
       });
+      
       rabbit.Sender(rabbitmqHost, subscribed);
 
       await prisma.eventHistory.create({
@@ -65,10 +67,12 @@ export default class UserServices {
         user_id: user_id,
       },
     });
-    
+
+    const currentStatus = prisma.$queryRaw`${query}${user_id};`
+    const stringfiedStatus = JSON.stringify(currentStatus)
+
     try {
-      switch (status) {
-        case canceled:
+      if(!stringfiedStatus.includes(status) && status === canceled){
           await prisma.status.update({
             where: {
               id: subscription?.status_id,
@@ -87,9 +91,9 @@ export default class UserServices {
               
             },
           });
-          
-          break;
-        case restarted:
+        }
+      
+        else if(!stringfiedStatus.includes(status) && status === restarted){
           await prisma.status.update({
             where: {
               id: subscription?.status_id,
@@ -98,7 +102,9 @@ export default class UserServices {
               status_name: restarted,
             },
           });
+
           rabbit.Sender(rabbitmqHost, restarted);
+
           await prisma.eventHistory.create({
             data: {
               type: restarted,
@@ -106,7 +112,7 @@ export default class UserServices {
               
             },
           });
-      }
+        }
     } catch (e) {
       console.log(e);
     }
