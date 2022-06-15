@@ -2,7 +2,7 @@ import dbServices from "../database/databaseServices";
 
 export default class UserServices {
   public static async CreateNewUser(full_name: string) {
-    const user = dbServices.CreateNewUser(full_name);
+    const user = await dbServices.CreateNewUser(full_name);
     if (user != undefined) {
       return user;
     }
@@ -10,7 +10,7 @@ export default class UserServices {
   }
 
   public static async UpdateSubscription(user_id: number, status: string) {
-    const updatedUser = dbServices.UpdateUserSubscriptionStatus(user_id, status)
+    const updatedUser = await dbServices.UpdateUserSubscriptionStatus(user_id, status)
     if (updatedUser != null){
       return updatedUser
     }

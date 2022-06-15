@@ -1,4 +1,4 @@
-import { PrismaClient, User } from "@prisma/client";
+import { PrismaClient, Subscription, User } from "@prisma/client";
 import AppError from "../../error/AppError";
 import { query } from "../../helper/query";
 import {
@@ -51,7 +51,7 @@ export default abstract class dbServices {
   public static async UpdateUserSubscriptionStatus(
     user_id: number,
     status: string
-  ): Promise<User | null> {
+  ): Promise<Subscription | null> {
     const prisma = new PrismaClient();
     const rabbit = new Rabbit();
     status = status.toLowerCase()
@@ -61,7 +61,7 @@ export default abstract class dbServices {
       },
     });
 
-    const subscription = await prisma.subscription.findFirst({
+    const oldSubscription = await prisma.subscription.findFirst({
       where: {
         user_id: user_id,
       },
@@ -73,7 +73,7 @@ export default abstract class dbServices {
       if (!stringfiedStatus.includes(status) && status === cancelado) {
         await prisma.status.update({
           where: {
-            id: subscription?.status_id,
+            id: oldSubscription?.status_id,
           },
           data: {
             status_name: cancelado,
@@ -84,13 +84,13 @@ export default abstract class dbServices {
         await prisma.eventHistory.create({
           data: {
             type: canceled,
-            subscription_id: subscription?.id,
+            subscription_id: oldSubscription?.id,
           },
         });
       } else if (!stringfiedStatus.includes(status) && status === ativo) {
         await prisma.status.update({
           where: {
-            id: subscription?.status_id,
+            id: oldSubscription?.status_id,
           },
           data: {
             status_name: ativo,
@@ -101,15 +101,22 @@ export default abstract class dbServices {
         await prisma.eventHistory.create({
           data: {
             type: restarted,
-            subscription_id: subscription?.id,
+            subscription_id: oldSubscription?.id,
           },
         });
       }
-      throw new AppError("Status foi diferente de ativo ou cancelado!")
+      const currentSubscription = await prisma.subscription.findFirst({where:{user_id:user_id}});
+      await prisma.subscription.update({
+        where: { id: currentSubscription?.id },
+        data:{
+          updated_at: new Date()
+        }
+      })
+      return currentSubscription
+      
     } catch (e) {
-      console.log(e);
+      throw new AppError("Status foi diferente de ativo ou cancelado!")
     }
 
-    return userInfo;
   }
 }

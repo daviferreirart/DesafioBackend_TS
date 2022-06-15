@@ -8,7 +8,7 @@ app.post("/user", async (req, res) => {
 
   const { full_name } = req.body;
 
-  const user = UserServices.CreateNewUser(full_name)
+  const user = await UserServices.CreateNewUser(full_name)
 
   return res.status(201).json(user);
 });
@@ -23,7 +23,7 @@ app.get("/user", async (req, res) => {
 app.put('/user/',async(req,res)=>{
   const {id,status} = req.body
 
-  const updatedUserStatus = UserServices.UpdateSubscription(id,status)
+  const updatedUserStatus = await UserServices.UpdateSubscription(id,status)
   
   return res.status(200).json(updatedUserStatus)
 })
