@@ -4,7 +4,6 @@ import request from "supertest";
 import { User } from "@prisma/client";
 import { Omit } from "../helper/omit";
 
-
 describe("Users suite", () => {
   let app: Application;
 
@@ -23,5 +22,14 @@ describe("Users suite", () => {
     const response = await request(app).post("/user").send(body);
     expect(response.body).toBeDefined();
     expect(response.status).toBe(201);
+  });
+
+  it("shouldnt be able to create a new user with empty name", async () => {
+    const body: Omit<User, "id" | "created_at"> = {
+      full_name: "",
+    };
+    const response = await request(app).post("/user").send(body);
+    expect(response.body.message).toBe("Empty name");
+    expect(response.status).toBe(400);
   });
 });

@@ -60,63 +60,60 @@ export default abstract class dbServices {
         id: user_id,
       },
     });
-
-    const oldSubscription = await prisma.subscription.findFirst({
-      where: {
-        user_id: user_id,
-      },
-    });
-
-    const currentStatus = prisma.$queryRaw`${query}${user_id};`;
-    const stringfiedStatus = JSON.stringify(currentStatus);
-    try {
-      if (!stringfiedStatus.includes(status) && status === cancelado) {
-        await prisma.status.update({
-          where: {
-            id: oldSubscription?.status_id,
-          },
-          data: {
-            status_name: cancelado,
-          },
-        });
-
-        rabbit.Sender(rabbitmqHost, canceled);
-        await prisma.eventHistory.create({
-          data: {
-            type: canceled,
-            subscription_id: oldSubscription?.id,
-          },
-        });
-      } else if (!stringfiedStatus.includes(status) && status === ativo) {
-        await prisma.status.update({
-          where: {
-            id: oldSubscription?.status_id,
-          },
-          data: {
-            status_name: ativo,
-          },
-        });
-
-        rabbit.Sender(rabbitmqHost, restarted);
-        await prisma.eventHistory.create({
-          data: {
-            type: restarted,
-            subscription_id: oldSubscription?.id,
-          },
-        });
-      }
-      const currentSubscription = await prisma.subscription.findFirst({where:{user_id:user_id}});
-      await prisma.subscription.update({
-        where: { id: currentSubscription?.id },
-        data:{
-          updated_at: new Date()
-        }
-      })
-      return currentSubscription
+    if(userInfo){
+      const oldSubscription = await prisma.subscription.findFirst({
+        where: {
+          user_id: user_id,
+        },
+      });
+  
+      const currentStatus = prisma.$queryRaw`${query}${user_id};`;
+      const stringfiedStatus = JSON.stringify(currentStatus);
       
-    } catch (e) {
-      throw new AppError("Status foi diferente de ativo ou cancelado!")
+        if (!stringfiedStatus.includes(status) && status === cancelado) {
+          await prisma.status.update({
+            where: {
+              id: oldSubscription?.status_id,
+            },
+            data: {
+              status_name: cancelado,
+            },
+          });
+  
+          rabbit.Sender(rabbitmqHost, canceled);
+          await prisma.eventHistory.create({
+            data: {
+              type: canceled,
+              subscription_id: oldSubscription?.id,
+            },
+          });
+        } else if (!stringfiedStatus.includes(status) && status === ativo) {
+          await prisma.status.update({
+            where: {
+              id: oldSubscription?.status_id,
+            },
+            data: {
+              status_name: ativo,
+            },
+          });
+  
+          rabbit.Sender(rabbitmqHost, restarted);
+          await prisma.eventHistory.create({
+            data: {
+              type: restarted,
+              subscription_id: oldSubscription?.id,
+            },
+          });
+        }
+        const currentSubscription = await prisma.subscription.findFirst({where:{user_id:user_id}});
+        await prisma.subscription.update({
+          where: { id: currentSubscription?.id },
+          data:{
+            updated_at: new Date()
+          }
+        })
+        return currentSubscription
     }
-
+    throw new AppError("The given id for the user was not found")
   }
 }

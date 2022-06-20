@@ -1,4 +1,5 @@
 import express from "express";
+import "express-async-errors";
 import status from "./routes/status.routes";
 import subscription from "./routes/subscription.routes";
 import events from "./routes/eventHistory.routes";
@@ -11,6 +12,6 @@ export const application = async () => {
   app.use(express.json());
 
   app.use(status, subscription, events, user);
-  app.use(errorHandler);
+  app.use(err);
   return app;
 };
