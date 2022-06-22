@@ -3,6 +3,13 @@ import { application } from "../server";
 import request from "supertest";
 import { User } from "@prisma/client";
 import { Omit } from "../helper/omit";
+import UserServices from "../services/userServices/userService";
+import { cancelado } from "../helper/statusMessages";
+
+type updateBody = {
+  id: number;
+  status: string;
+};
 
 describe("Users suite", () => {
   let app: Application;
@@ -31,5 +38,35 @@ describe("Users suite", () => {
     const response = await request(app).post("/user").send(body);
     expect(response.body.message).toBe("Empty name");
     expect(response.status).toBe(400);
+  });
+
+  it("Should be able to update a new user with the correct atributes", async () => {
+    const user = await UserServices.CreateNewUser("Teste");
+    if (user) {
+      const userToBeUpdatedBody: updateBody = {
+        id: user.id,
+        status: cancelado,
+      };
+      const response = await request(app)
+        .put("/user")
+        .send(userToBeUpdatedBody);
+      expect(response.body).toBeDefined();
+      expect(response.status).toBe(200);
+    }
+  });
+
+  it("Shouldnt be able to update a new user with the wrong atributes", async () => {
+    const user = await UserServices.CreateNewUser("Teste invalido");
+    if (user) {
+      const userToBeUpdatedBody: updateBody = {
+        id: user.id,
+        status: "invalido",
+      };
+      const response = await request(app)
+        .put("/user")
+        .send(userToBeUpdatedBody);
+      expect(response.body).toBeDefined()
+      expect(response.status).toBe(400);
+    }
   });
 });
