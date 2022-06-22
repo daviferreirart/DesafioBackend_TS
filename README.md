@@ -17,3 +17,5 @@
     
  # Run code:
     npm run dev
+ # Run unit tests:
+    npm run test
