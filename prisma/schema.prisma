@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,16 +10,16 @@ datasource db {
 model User {
   id           Int            @id @default(autoincrement())
   full_name    String
-  subscription Subscription[]
   created_at   DateTime       @default(now())
-
+  subscription Subscription[]
 }
 
 model EventHistory {
   id              Int          @id @default(autoincrement())
   type            String
-  idSubs          Subscription @relation(fields: [subscription_id], references: [id])
   subscription_id Int
+  created_at      DateTime     @default(now())
+  idSubs          Subscription @relation(fields: [subscription_id], references: [id])
 }
 
 model Status {
@@ -33,11 +30,11 @@ model Status {
 
 model Subscription {
   id           Int            @id @default(autoincrement())
-  status       Status         @relation(fields: [status_id], references: [id])
   status_id    Int
   user_id      Int
-  id_user      User           @relation(fields: [user_id], references: [id])
-  eventHistory EventHistory[]
   created_at   DateTime       @default(now())
   updated_at   DateTime       @default(now())
+  status       Status         @relation(fields: [status_id], references: [id])
+  id_user      User           @relation(fields: [user_id], references: [id])
+  eventHistory EventHistory[]
 }
