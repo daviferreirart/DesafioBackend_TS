@@ -1,6 +1,7 @@
 import { PrismaClient, Subscription, User } from "@prisma/client";
 import AppError from "../../error/AppError";
-import { query } from "../../helper/query";
+import { query, userInfo } from "../../helper/query";
+import { userBodyInfo } from "../../helper/typo";
 import {
   cancelado,
   canceled,
@@ -65,9 +66,9 @@ export default abstract class dbServices {
       },
     });
     if (userInfo) {
-      const oldSubscription = await prisma.subscription.findFirst({
+      const oldSubscription = await prisma.subscription.findUnique({
         where: {
-          user_id: user_id,
+          id: user_id,
         },
       });
 
@@ -121,5 +122,21 @@ export default abstract class dbServices {
       return currentSubscription;
     }
     throw new AppError("The given id for the user was not found");
+  }
+  public static async getAllUserInfo(
+    user_id: string
+  ): Promise<userBodyInfo | unknown> {
+    const id = Number(user_id);
+    const prisma = new PrismaClient();
+    const userExists = await prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (userExists) {
+      const info = prisma.$queryRawUnsafe(`${userInfo}${user_id};`);
+      return info;
+    }
+    throw new AppError("The given id for the user doesnt exists!");
   }
 }

@@ -16,4 +16,7 @@ export default class UserServices {
     }
     return null || undefined;
   }
+  public static async GetUserInfo(user_id:string){
+    return await dbServices.getAllUserInfo(user_id)
+  }
 }

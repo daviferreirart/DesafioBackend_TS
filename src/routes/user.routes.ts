@@ -15,6 +15,12 @@ app.post("/user", async (req, res) => {
   throw new AppError("Empty name");
 });
 
+app.get("/user/:id", async (req, res) => {
+  const { id } = req.params;
+  const info = await UserServices.GetUserInfo(id)
+  return res.status(200).json(info);
+});
+
 app.get("/user", async (req, res) => {
   const prisma = new PrismaClient();
   const users = await prisma.user.findMany();
