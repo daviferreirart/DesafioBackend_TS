@@ -5,7 +5,7 @@ import { userBodyInfo } from "../../helper/typo";
 import { cancelado, canceled, ativo, restarted, subscribed, } from "../../helper/statusMessages";
 import Rabbit, { rabbitmqHost } from "../rabbitServices/Rabbitmq";
 
-export default abstract class dbServices {
+export default abstract class DBServices {
   public static async CreateNewUser(
     full_name: string
   ): Promise<User | undefined> {
