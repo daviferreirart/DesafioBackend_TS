@@ -9,8 +9,7 @@ import {
   restarted,
   subscribed,
 } from "../../helper/statusMessages";
-import Rabbit from "../rabbitServices/Rabbitmq";
-import { rabbitmqHost } from "../rabbitServices/RabbitVerifier";
+import Rabbit, { rabbitmqHost } from "../rabbitServices/Rabbitmq";
 
 export default abstract class dbServices {
   public static async CreateNewUser(
@@ -137,7 +136,7 @@ export default abstract class dbServices {
       });
       user = userExists;
     } catch (error) {
-      throw new AppError("Invalid number format",500);
+      throw new AppError("Invalid number format", 500);
     }
     if (user) {
       const info = prisma.$queryRawUnsafe(`${userInfo}${user_id};`);
