@@ -116,7 +116,7 @@ export default abstract class DBServices {
     }
     throw new AppError("The given id for the user was not found");
   }
-  public static async getAllUserInfo(
+  public static async GetAllUserInfo(
     user_id: number
   ): Promise<userBodyInfo | unknown> {
     const id = Number(user_id);
