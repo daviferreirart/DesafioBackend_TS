@@ -65,8 +65,34 @@ describe("Users suite", () => {
       const response = await request(app)
         .put("/user")
         .send(userToBeUpdatedBody);
-      expect(response.body).toBeDefined()
+      expect(response.body).toBeDefined();
       expect(response.status).toBe(400);
+    }
+  });
+  it("Should be able to recover all the data from the given id", async () => {
+    const user = await UserServices.CreateNewUser("Valid user");
+    if (user) {
+      const response = await request(app).get(`/user/${user.id}`);
+      expect(response.body).toBeDefined();
+      expect(response.status).toBe(200);
+    }
+  });
+  it("Shouldnt be able to recover all the data from the given id", async () => {
+    const user = await UserServices.CreateNewUser("Invalid user");
+    if (user) {
+      const response = await request(app).get(`/user/${0}`);
+      expect(response.body.message).toBe(
+        "The given id for the user doesnt exists!"
+      );
+      expect(response.status).toBe(400);
+    }
+  });
+  it("Shouldnt be able to recover all the data from the given id with not supported format", async () => {
+    const user = await UserServices.CreateNewUser("Invalid user");
+    if (user) {
+      const response = await request(app).get(`/user/${"a"}`);
+      expect(response.body.message).toBe("Invalid number format");
+      expect(response.status).toBe(500);
     }
   });
 });

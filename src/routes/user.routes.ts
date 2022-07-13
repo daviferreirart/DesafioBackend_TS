@@ -17,7 +17,7 @@ app.post("/user", async (req, res) => {
 
 app.get("/user/:id", async (req, res) => {
   const { id } = req.params;
-  const info = await UserServices.GetUserInfo(id)
+  const info = await UserServices.GetUserInfo(Number(id))
   return res.status(200).json(info);
 });
 

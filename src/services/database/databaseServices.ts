@@ -124,16 +124,22 @@ export default abstract class dbServices {
     throw new AppError("The given id for the user was not found");
   }
   public static async getAllUserInfo(
-    user_id: string
+    user_id: number
   ): Promise<userBodyInfo | unknown> {
     const id = Number(user_id);
     const prisma = new PrismaClient();
-    const userExists = await prisma.user.findUnique({
-      where: {
-        id,
-      },
-    });
-    if (userExists) {
+    let user;
+    try {
+      const userExists = await prisma.user.findUnique({
+        where: {
+          id,
+        },
+      });
+      user = userExists;
+    } catch (error) {
+      throw new AppError("Invalid number format",500);
+    }
+    if (user) {
       const info = prisma.$queryRawUnsafe(`${userInfo}${user_id};`);
       return info;
     }
