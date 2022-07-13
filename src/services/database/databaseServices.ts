@@ -2,13 +2,7 @@ import { PrismaClient, Subscription, User } from "@prisma/client";
 import AppError from "../../error/AppError";
 import { query, userInfo } from "../../helper/query";
 import { userBodyInfo } from "../../helper/typo";
-import {
-  cancelado,
-  canceled,
-  ativo,
-  restarted,
-  subscribed,
-} from "../../helper/statusMessages";
+import { cancelado, canceled, ativo, restarted, subscribed, } from "../../helper/statusMessages";
 import Rabbit, { rabbitmqHost } from "../rabbitServices/Rabbitmq";
 
 export default abstract class dbServices {
