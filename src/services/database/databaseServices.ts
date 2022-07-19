@@ -133,7 +133,7 @@ export default abstract class DBServices {
       throw new AppError("Invalid number format", 500);
     }
     if (user) {
-      const info = prisma.$queryRawUnsafe(`${userInfo}${user_id};`);
+      const info = await prisma.$queryRawUnsafe(`${userInfo}${user_id};`);
       return info;
     }
     throw new AppError("The given id for the user doesnt exists!");
