@@ -53,15 +53,15 @@ export default abstract class DBServices {
     if (status != cancelado && status != ativo) {
       throw new AppError("Invalid status");
     }
-    const userInfo = await prisma.user.findFirst({
+    const userInfo = await prisma.user.findUnique({
       where: {
         id: user_id,
       },
     });
     if (userInfo) {
-      const oldSubscription = await prisma.subscription.findUnique({
+      const oldSubscription = await prisma.subscription.findFirst({
         where: {
-          id: user_id,
+          user_id: user_id,
         },
       });
 
