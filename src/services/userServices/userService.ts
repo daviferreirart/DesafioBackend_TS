@@ -10,13 +10,16 @@ export default class UserServices {
   }
 
   public static async UpdateSubscription(user_id: number, status: string) {
-    const updatedUser = await DBService.UpdateUserSubscriptionStatus(user_id, status)
-    if (updatedUser != null){
-      return updatedUser
+    const updatedUser = await DBService.UpdateUserSubscriptionStatus(
+      user_id,
+      status
+    );
+    if (updatedUser != null) {
+      return updatedUser;
     }
-    return null || undefined;
+    return null;
   }
-  public static async GetUserInfo(user_id:number){
-    return await DBService.GetAllUserInfo(user_id)
+  public static async GetUserInfo(user_id: number) {
+    return await DBService.GetAllUserInfo(user_id);
   }
 }
