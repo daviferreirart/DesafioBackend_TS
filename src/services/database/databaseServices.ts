@@ -71,12 +71,7 @@ export default abstract class DBServices {
         },
       });
 
-      const currentStatus =
-        await prisma.$queryRaw`select s.status_name from "Subscription" s2  inner join "Status" s on s.id =s2.status_id
-      inner join "User" u on u.id=s2.user_id where u.id=${user_id};`;
-      const stringfiedStatus = JSON.stringify(currentStatus);
-
-      if (!stringfiedStatus.includes(status) && status === cancelado) {
+      if (status == cancelado) {
         await prisma.status.update({
           where: {
             id: oldSubscription?.status_id,
@@ -93,7 +88,7 @@ export default abstract class DBServices {
             subscription_id: oldSubscription?.id,
           },
         });
-      } else if (!stringfiedStatus.includes(status) && status === ativo) {
+      } else if (status == ativo) {
         await prisma.status.update({
           where: {
             id: oldSubscription?.status_id,
