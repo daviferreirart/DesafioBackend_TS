@@ -2,7 +2,13 @@ import { PrismaClient, Subscription, User } from "@prisma/client";
 import AppError from "../../error/AppError";
 import { query, userInfo } from "../../helper/query";
 import { userBodyInfo } from "../../helper/typo";
-import { cancelado, canceled, ativo, restarted, subscribed, } from "../../helper/statusMessages";
+import {
+  cancelado,
+  canceled,
+  ativo,
+  restarted,
+  subscribed,
+} from "../../helper/statusMessages";
 import Rabbit, { rabbitmqHost } from "../rabbitServices/Rabbitmq";
 
 export default abstract class DBServices {
@@ -65,7 +71,9 @@ export default abstract class DBServices {
         },
       });
 
-      const currentStatus = prisma.$queryRaw`${query}${user_id};`;
+      const currentStatus =
+        await prisma.$queryRaw`select s.status_name from "Subscription" s2  inner join "Status" s on s.id =s2.status_id
+      inner join "User" u on u.id=s2.user_id where u.id=${user_id};`;
       const stringfiedStatus = JSON.stringify(currentStatus);
 
       if (!stringfiedStatus.includes(status) && status === cancelado) {
